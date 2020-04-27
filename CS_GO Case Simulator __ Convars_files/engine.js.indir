@@ -1,0 +1,204 @@
+function openTabs(evt, tabName, cl, clb)
+{
+    var i, x, tablinks;
+    x = document.getElementsByClassName(clb);
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName(cl);
+    for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" button_active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " button_active";
+}
+function plusDivs(n)
+{
+	showDivs(slideIndex += n);
+}
+function currentDiv(n)
+{
+	showDivs(slideIndex = n);
+}
+function showDivs(n)
+{
+	var i;
+	var x = document.getElementsByClassName("sliderBlock");
+	var dots = document.getElementsByClassName("sliderDot");
+	if (n >= x.length) {slideIndex = 0}    
+	if (n < 0) {slideIndex = x.length-1}
+	for (i = 0; i < x.length; i++) {
+		x[i].style.display = "none";  
+	}
+	for (i = 0; i < dots.length; i++) {
+		dots[i].className = dots[i].className.replace(" sliderActive", "");
+	}
+	x[slideIndex].style.display = "block";  
+	dots[slideIndex].className += " sliderActive";
+}
+function arraySwap(array,overwriteNewValue,keepKey)
+{
+	if(typeof(array)=="undefined")
+	{
+		return false;
+	}
+	if(typeof(array)!="object")
+	{
+		array=new Array(array);
+	}
+	var output=new Array();
+	if(typeof(overwriteNewValue)=="undefined")
+	{
+		for(var k in array)
+		{
+			output[array[k]]=k;
+		}
+	}
+	else
+	{
+		if(!keepKey)
+		{
+			for(var k in array)
+			{
+				output[array[k]]=overwriteNewValue;
+				}
+			}
+		else
+		{
+			for(var k in array)
+			{
+				output[k]=overwriteNewValue;
+			}
+		}
+	}
+	return output;
+}
+
+function arrayKeys(input)
+{
+	let five = 1;
+	let total = 0;
+    let output = new Array();
+    let outputr = new Array();
+    let output2 = new Array();
+    let output3 = new Array();
+    let output4 = new Array();
+    let counter = 0;
+	let multiply = 4
+    for (i=0;i<input.length;i++)
+	{
+		five *= multiply;
+		if(i != 0 && (input[i-1] - input[i]) > 1)
+		{
+			five *= multiply;
+		}
+        output[counter] = input[i];
+        outputr[counter] = input[i];
+		total = total + five;
+		output2[i] = total;
+		output4[i] = five;
+		counter++;
+    } 
+	output3['levels'] = output;
+	//output3['levels_reverse'] = arraySwap(outputr.reverse());
+	output3['rands'] = output2;
+	output3['rands2'] = output4.reverse();
+	output3['total'] = total;
+    return output3;
+}
+function sortFunction(a, b)
+{
+    if (parseFloat(a[0]) === parseFloat(b[0]))
+	{
+        return 0;
+    }
+    else
+	{
+        return (parseFloat(a[0]) < parseFloat(b[0])) ? -1 : 1;
+    }
+}
+function animnum(name,id,n1,n2,f,c)
+{
+	if(n1 != n2)
+	{
+		var d = ((parseFloat(n2) - parseFloat(n1))/25);
+		if(f > 0)
+		{
+			d = d.toFixed(f);
+			if(d == 0)
+			{
+				d = (1 / Math.pow(10, f)).toFixed(f);
+				if(n1 > n2)
+				{
+					d = 0 - d;
+				}
+			}
+		}
+		else if(d < 1 && n1 < n2)
+		{
+			d = 1;
+		}
+		else if(d > 1 && n1 > n2)
+		{
+			d = -1;
+		}
+		if(this['interval_'+name] != false)
+		{
+			//document.getElementById(id).innerHTML = parseFloat(this['interval_end_'+name]);
+			clearInterval(this['interval_'+name]);
+		}
+		//this['interval_end_'+name] = parseFloat(n2);
+		this['interval_count_'+name] = 0;
+		this['interval_'+name] = setInterval(animnumgo, 25, n1, n2, id, d, f, name, c);
+		//console.log(n1 + ' | ' + n2);
+	}
+}
+function animnumgo(n1, n2, id, d, f, name, c)
+{
+	//if(d > 1 / Math.pow(10, f) && n2 > n1 || d > -1 / Math.pow(10, f) && n1 > n2)
+	//{
+		document.getElementById(id).style.transition = '0.1s';
+		document.getElementById(id).style.transform = 'scale(1.2)';
+		document.getElementById(id).style.textShadow = '2px 2px 0px #234';
+		if(c == 'profit')
+		{
+			if(n1 < n2)
+			{
+				document.getElementById(id).style.color = '#3fc';
+			}
+			else
+			{
+				document.getElementById(id).style.color = '#f66';
+			}
+		}
+	//}
+	var next = parseFloat(document.getElementById(id).innerHTML) + parseFloat(d);
+
+	next = next.toFixed(f);
+	
+	this['interval_count_'+name]++;
+	if(next >= n2 && n1 < n2 || next <= n2 && n1 > n2 || this['interval_count_'+name] >= 25)
+	{
+		this['interval_count_'+name] = 0;
+		next = n2;
+		clearInterval(this['interval_'+name]);
+		document.getElementById(id).style.transform = '';
+		document.getElementById(id).style.textShadow = '';
+		document.getElementById(id).style.color = '';
+		this['interval_'+name] = false;
+		//console.log('done');
+	}
+	document.getElementById(id).innerHTML = next;
+	//console.log(this['interval_count_'+name] + ' | next:' + next + ' | n1:' + n1  + ' | n2:' + n2  + ' d:| ' + d);
+}
+function shuffle(a)
+{
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
